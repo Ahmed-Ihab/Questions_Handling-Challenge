@@ -48,6 +48,7 @@ void Question_Handling_Task (void)
 	//static uint8 Answer_Display_Flag = 0;
 	uint8 Answer= 6;	//any values except 1 , 2 , 3
 	uint8 Display_choices[]="YES   NO  SKIP";
+	uint8 score[]="yr score:";
 
 	switch(Question_State)
 
@@ -476,6 +477,15 @@ void Question_Handling_Task (void)
 		
 	case RESULT:
 	{
+		if(score[quest_iterator] != '\0')			// wait your answer choices to be completely displayed in the second line then select your answer through keypad
+		{
+			LCD_Data_G[1][quest_iterator] = score[quest_iterator];
+			quest_iterator++;
+		}
+		else{
+			LCD_Data_G[1][10]  = Correct_Answer + '0';
+		}
+		
 		break;
 	}
 			
