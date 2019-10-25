@@ -15,7 +15,7 @@
 uint8 LCD_Init_Flag = 0;
 uint8 Timer ;
 uint8 Char_G;
-uint8 Press_Key_Flag=0; 
+
 
 #if LCD_MODE
 /*
@@ -790,7 +790,6 @@ void LCD_Keypad_Update (void)
 	{
 		Char_G =0;
 	}
-	Press_Key_Flag=1;
 }
 
 

@@ -62,7 +62,7 @@
 extern uint8 LCD_Init_Flag;
 extern uint8 LCD_Data_G[LCD_LINES][LCD_CHARACTERS+1];
 extern uint8 Char_G ;
-extern uint8 Press_Key_Flag;
+
 
 void LCD_Update (void);
 void LCD_Create_Character(const uint8 UDC_ID , const uint8 *const P_UDC);
