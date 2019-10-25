@@ -165,7 +165,6 @@ void LCD_4Bits_Write_Data ( unsigned char Data )				//Working with OS
 {
   if(LCD_Init_Flag == 1)
   {
-	  	PORTB ^= (1<<PB0);
 	//static unsigned char X_axis = 1 , Y_axis = 1;
 
 	//LCD_4Bits_PORT  = (LCD_4Bits_PORT & 0x0F) | (Data & 0xF0) ;			//Send the Highest Nibble in data to the outPort
@@ -286,7 +285,6 @@ void LCD_4Bits_Shift_Left(void)
 
 void LCD_4Bits_Print_Character( char row , char column , char ch )
 {
-	PORTB ^= (1<<PB4);
 	LCD_4Bits_Cursor_Position(row,column);
 	
 	LCD_4Bits_Write_Data (ch );
@@ -743,7 +741,7 @@ void  LCD_Create_Character(const uint8 UDC_ID , const uint8 *const P_UDC)
 // This Function Provides a short delay for the LCD 
 void LCD_Delay (void)
 {
-	_delay_us(50);
+	_delay_us(30);
 }
 
 

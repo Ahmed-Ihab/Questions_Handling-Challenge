@@ -23,6 +23,7 @@ ST_Task_Info *Task_Ready_Buffer[BUFFER_SIZE];
 //Call back function for the ISR to set the flag
 void ISR_Generated_Flag_Setter() 
 { 
+	PORTB ^= (1<<PB0);
 	ISR_Generated_Flag = 1;
 }
 
