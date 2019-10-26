@@ -12,54 +12,17 @@
 #define DELAY_PERIOD_AFTER_ENABLE_HIGH 20
 #define DELAY_PERIOD_AFTER_ENABLE_LOW  20
 
-//typedef enum {FIRST_VISIT=0,SECOND_VISIT=1, WAITING=2 , PENDING=2 ,DONE=3,FINISHED=3}NO_of_Visit_t;			//Found in std_types Library
-
 //--------------------------------------------------------------------------------------------------------------------------//
+/*init indication*/
 uint8 LCD_Init_Flag = 0;
 uint8 Timer ;
 uint8 Char_G;
 
 
 #if LCD_MODE
-/*
-void LCD_4Bits_Initialization (void)			//Working with OS
-{
-	static uint8 Visit_Number = 0;
-	if(LCD_Init_Flag == 0)
-	{
-		if(Visit_Number == 0)
-		{
-			
-			//LCD_4Bits_DDR_ = 0xFF; 						//LCD port is output
-			DIO_init_PORT(LCD_4Bits_DDR,OUTPUT,PULLDOWN);
-			
-			//LCD_4Bits_PORT_ &= ~ (1<<LCD_EN) ;			//LCD_EN = 0
-			DIO_Write_Pin(LCD_4Bits_PORT_,LCD_EN,0);
-			
-			LCD_4Bits_Write_Command (0x33) ;			//$33 for 4-bit mode
-			LCD_4Bits_Write_Command (0x32);				//$32 for 4-bit mode
-			LCD_4Bits_Write_Command (0x28) ; 			//$28 for 4-bits, LCD 2 line , 5x7 matrix
-			LCD_4Bits_Write_Command (0x0E);				//display on, cursor on
-			LCD_4Bits_Write_Command (0x01);				//Clear LCD
-			Visit_Number=1;
-			return ;
-		}
-		
-		else if(Visit_Number == 1)
-		{
-			
-			//_delay_us (2000);							//long wait as clear command takes a long time
-			LCD_4Bits_Write_Command (0x06) ; 			//shift cursor right
-			LCD_Init_Flag = 1;
-		}
-	}
-		
-		
-}
-*/
 
 
-Function_Process_t LCD_4Bits_Initialization (void)		//Working without OS
+Function_Process_t LCD_4Bits_Initialization (void)		//Working with OS
 {
 	 Function_Process_t Function_Process=NOT_FINISHED;
 	static NO_of_Visit_t LCD_Init_Visit = FIRST_VISIT;
@@ -70,10 +33,7 @@ Function_Process_t LCD_4Bits_Initialization (void)		//Working without OS
 		case FIRST_VISIT:
 		{	
 			
-			//LCD_4Bits_DDR = 0xFF; 						//LCD port is output
-			//DIO_init_PORT(LCD_4Bits_DDR_,OUTPUT,PULLDOWN);
 			LCD_Init_Flag = 1;
-			//LCD_4Bits_PORT &= ~ (1<<LCD_EN) ;			//LCD_EN = 0
 			DIO_Write_Pin(LCD_4Bits_PORT_,LCD_EN,0);
 			
 			LCD_4Bits_Write_Command (0x33) ;			//$33 for 4-bit mode
@@ -85,10 +45,9 @@ Function_Process_t LCD_4Bits_Initialization (void)		//Working without OS
 			
 			LCD_Init_Visit = WAITING;
 			
-			//_delay_us (2000);							//long wait as clear command takes a long time
 			break;
 		}
-		
+		/*long wait as clear command takes a long time*/
 		case WAITING:
 		{
 			Visit_Counter++;	
@@ -133,129 +92,76 @@ void LCD_4Bits_Write_Command ( unsigned char Command )				//Working by OS
 
 	if(	LCD_Init_Flag == 1)
 	{
-		//LCD_4Bits_PORT = (LCD_4Bits_PORT & 0x0F) | (Command & 0xF0) ;					//Send the Highest Nibble in Command to the outPort
-		//LCD_4Bits_PORT = (Command & 0xF0) ;
+		//Send the Highest Nibble in Command to the outPort
 		DIO_Write_PORT(LCD_4Bits_PORT_,(LCD_4Bits_PORT & 0x0F) | (Command & 0xF0));
 		
-		//LCD_4Bits_PORT &= ~(1<<LCD_RS);													//RS = 0 for command
 		DIO_Write_Pin(LCD_4Bits_PORT_,LCD_RS,0);
 		
-		//LCD_4Bits_PORT &= ~  (1<<LCD_RW);												//RW = 0 for write
 		DIO_Write_Pin(LCD_4Bits_PORT_,LCD_RW,0);
 		
-		//LCD_4Bits_PORT  |= (1<<LCD_EN);													//EN = 1 for High-to-Low
 		DIO_Write_Pin(LCD_4Bits_PORT_,LCD_EN,1);
-		
-		//_delay_us(DELAY_PERIOD_AFTER_ENABLE_HIGH);																	//wait to make EN wider
+		//DELAY_PERIOD_AFTER_ENABLE_HIGH
 		LCD_Delay();
 		
-		//LCD_4Bits_PORT &= ~ (1<<LCD_EN) ;												//EN = 0 for High-to-Low
 		DIO_Write_Pin(LCD_4Bits_PORT_,LCD_EN,0);
-
-		//_delay_us(DELAY_PERIOD_AFTER_ENABLE_LOW);																	//wait for the least nibble of the Command
+		//DELAY_PERIOD_AFTER_ENABLE_LOW
 		LCD_Delay();
-		
-		//LCD_4Bits_PORT = (LCD_4Bits_PORT & 0x0F) | (Command <<4) ;					    // Shift the least nibble by 4 to send the Highest Nibble in   Command  to the outPort
-		//LCD_4Bits_PORT = (Command <<4) ;
+		//  Shift the least nibble by 4 to send the Highest Nibble in   Command  to the outPort
 		DIO_Write_PORT(LCD_4Bits_PORT_, (LCD_4Bits_PORT & 0x0F) | (Command <<4) );
-		
-		//LCD_4Bits_PORT  |= ( 1 << LCD_EN ) ;											//EN = 1 for High-to-Low
+		//EN = 1 for High-to-Low
 		DIO_Write_Pin(LCD_4Bits_PORT_,LCD_EN,1);
 		
-		//_delay_us (DELAY_PERIOD_AFTER_ENABLE_HIGH) ;																	//wait to make EN wider
 		LCD_Delay();
-		
-		//LCD_4Bits_PORT &= ~ ( 1 << LCD_EN) ;											//EN = 0 for High-to-Low
+		//EN = 0 for High-to-Low
 		DIO_Write_Pin(LCD_4Bits_PORT_,LCD_EN,0);
 		
-		//_delay_us(DELAY_PERIOD_AFTER_ENABLE_LOW);
 		LCD_Delay();
 	}
 	
 }						
 
 
-/*
-void LCD_4Bits_Write_Command ( unsigned char Command )				//Working Without OS
-{
-		//LCD_4Bits_PORT = (LCD_4Bits_PORT & 0x0F) | (Command & 0xF0) ;					//Send the Highest Nibble in Command to the outPort
-		//LCD_4Bits_PORT = (Command & 0xF0) ;
-		DIO_Write_PORT(LCD_4Bits_PORT_,(LCD_4Bits_PORT & 0x0F) | (Command & 0xF0));
-		
-		//LCD_4Bits_PORT &= ~(1<<LCD_RS);													//RS = 0 for command
-		DIO_Write_Pin(LCD_4Bits_PORT_,LCD_RS,0);
-		
-		//LCD_4Bits_PORT &= ~  (1<<LCD_RW);												//RW = 0 for write
-		DIO_Write_Pin(LCD_4Bits_PORT_,LCD_RW,0);
-		
-		//LCD_4Bits_PORT  |= (1<<LCD_EN);													//EN = 1 for High-to-Low
-		DIO_Write_Pin(LCD_4Bits_PORT_,LCD_EN,1);
-		
-		_delay_us(DELAY_PERIOD_AFTER_ENABLE_HIGH);																	//wait to make EN wider
-		
-		//LCD_4Bits_PORT &= ~ (1<<LCD_EN) ;												//EN = 0 for High-to-Low
-		DIO_Write_Pin(LCD_4Bits_PORT_,LCD_EN,0);
-		
-		_delay_us(DELAY_PERIOD_AFTER_ENABLE_LOW);																	//wait for the least nibble of the Command
-
-		//LCD_4Bits_PORT = (LCD_4Bits_PORT & 0x0F) | (Command <<4) ;					    // Shift the least nibble by 4 to send the Highest Nibble in   Command  to the outPort
-		//LCD_4Bits_PORT = (Command <<4) ;
-		DIO_Write_PORT(LCD_4Bits_PORT_, (LCD_4Bits_PORT & 0x0F) | (Command <<4) );
-		
-		//LCD_4Bits_PORT  |= ( 1 << LCD_EN ) ;											//EN = 1 for High-to-Low
-		DIO_Write_Pin(LCD_4Bits_PORT_,LCD_EN,1);
-		_delay_us (DELAY_PERIOD_AFTER_ENABLE_HIGH) ;																	//wait to make EN wider
-		
-		
-		//LCD_4Bits_PORT &= ~ ( 1 << LCD_EN) ;											//EN = 0 for High-to-Low
-		DIO_Write_Pin(LCD_4Bits_PORT_,LCD_EN,0);
-		_delay_us(DELAY_PERIOD_AFTER_ENABLE_LOW);
-}
-*/
 
 
 void LCD_4Bits_Write_Data ( unsigned char Data )				//Working with OS
 {
   if(LCD_Init_Flag == 1)
   {
-	//static unsigned char X_axis = 1 , Y_axis = 1;
-
-	//LCD_4Bits_PORT  = (LCD_4Bits_PORT & 0x0F) | (Data & 0xF0) ;			//Send the Highest Nibble in data to the outPort
-	//LCD_4Bits_PORT  = Data & 0xF0;										//Send the Highest Nibble in data to the outPort
+	//Send the Highest Nibble in Command to the outPort
 	DIO_Write_PORT(LCD_4Bits_PORT_, (LCD_4Bits_PORT & 0x0F) | (Data & 0xF0));
 	
-	//LCD_4Bits_PORT |= (1 << LCD_RS);									//RS = 1 for data
+	//RS = 1 for data
 	DIO_Write_Pin(LCD_4Bits_PORT_,LCD_RS,1);
 	
-	//LCD_4Bits_PORT &= ~ (1 << LCD_RW);									//RW = 0 for write
+	//RW = 0 for write
 	DIO_Write_Pin(LCD_4Bits_PORT_,LCD_RW,0);
 	
-	//LCD_4Bits_PORT |= (1 << LCD_EN);									//EN = 1    for High-to-Low
+	//EN = 1    for High-to-Low
 	DIO_Write_Pin(LCD_4Bits_PORT_,LCD_EN,1);
 	
-	 //_delay_us(DELAY_PERIOD_AFTER_ENABLE_HIGH) ;
+	 //DELAY_PERIOD_AFTER_ENABLE_HIGH) ;
 	 LCD_Delay();
 	 
-	//LCD_4Bits_PORT &= ~(1<< LCD_EN) ; 									//EN = 0   for High-to-Low
+	//EN = 0   for High-to-Low
 	DIO_Write_Pin(LCD_4Bits_PORT_,LCD_EN,0);
 	
-	//_delay_us(DELAY_PERIOD_AFTER_ENABLE_LOW);
+	//DELAY_PERIOD_AFTER_ENABLE_LOW);
 	LCD_Delay();
 	
-	//LCD_4Bits_PORT = (LCD_4Bits_PORT & 0x0F) | (Data <<4) ;			    // shift the least nibble by 4 to send the Highest Nibble in data  to the outPort.
-	//LCD_4Bits_PORT  = (Data << 4);	
+	// shift the least nibble by 4 to send the Highest Nibble in data  to the outPort.
+	
 	DIO_Write_PORT(LCD_4Bits_PORT_, (LCD_4Bits_PORT & 0x0F) | (Data <<4) );
 	
-	//LCD_4Bits_PORT |=(1 << LCD_EN);										//EN = 1    for High-to-Low
+	//EN = 1    for High-to-Low
 	DIO_Write_Pin(LCD_4Bits_PORT_,LCD_EN,1);
 	
-	// _delay_us(DELAY_PERIOD_AFTER_ENABLE_HIGH) ;
+	// DELAY_PERIOD_AFTER_ENABLE_HIGH ;
 	 LCD_Delay();
 	
-	//LCD_4Bits_PORT &= ~ (1<< LCD_EN) ; 									//EN = 0   for High-to-Low
+	//EN = 0   for High-to-Low
 	DIO_Write_Pin(LCD_4Bits_PORT_,LCD_EN,0);
 	
-	//_delay_us(DELAY_PERIOD_AFTER_ENABLE_LOW);	
+	//DELAY_PERIOD_AFTER_ENABLE_LOW);	
 	LCD_Delay();
 	
 	}
@@ -263,46 +169,7 @@ void LCD_4Bits_Write_Data ( unsigned char Data )				//Working with OS
 }
 
 
-/*
-void LCD_4Bits_Write_Data ( unsigned char Data )				//Working Without OS
-{
 
-	//LCD_4Bits_PORT  = (LCD_4Bits_PORT & 0x0F) | (Data & 0xF0) ;			//Send the Highest Nibble in data to the outPort
-	//LCD_4Bits_PORT  = Data & 0xF0;										//Send the Highest Nibble in data to the outPort
-	DIO_Write_PORT(LCD_4Bits_PORT_, (LCD_4Bits_PORT & 0x0F) | (Data & 0xF0));
-	
-	//LCD_4Bits_PORT |= (1 << LCD_RS);									//RS = 1 for data
-	DIO_Write_Pin(LCD_4Bits_PORT_,LCD_RS,1);
-	
-	//LCD_4Bits_PORT &= ~ (1 << LCD_RW);									//RW = 0 for write
-	DIO_Write_Pin(LCD_4Bits_PORT_,LCD_RW,0);
-	
-	//LCD_4Bits_PORT |= (1 << LCD_EN);									//EN = 1    for High-to-Low
-	DIO_Write_Pin(LCD_4Bits_PORT_,LCD_EN,1);
-	
-	 _delay_us(DELAY_PERIOD_AFTER_ENABLE_HIGH) ;
-	
-	//LCD_4Bits_PORT &= ~(1<< LCD_EN) ; 									//EN = 0   for High-to-Low
-	DIO_Write_Pin(LCD_4Bits_PORT_,LCD_EN,0);
-	
-	_delay_us(DELAY_PERIOD_AFTER_ENABLE_LOW);
-	
-	//LCD_4Bits_PORT = (LCD_4Bits_PORT & 0x0F) | (Data <<4) ;			    // shift the least nibble by 4 to send the Highest Nibble in data  to the outPort.
-	//LCD_4Bits_PORT  = (Data << 4);	
-	DIO_Write_PORT(LCD_4Bits_PORT_, (LCD_4Bits_PORT & 0x0F) | (Data <<4) );
-	
-	//LCD_4Bits_PORT |=(1 << LCD_EN);										//EN = 1    for High-to-Low
-	DIO_Write_Pin(LCD_4Bits_PORT_,LCD_EN,1);
-	
-	 _delay_us(DELAY_PERIOD_AFTER_ENABLE_HIGH) ;
-	
-	//LCD_4Bits_PORT &= ~ (1<< LCD_EN) ; 									//EN = 0   for High-to-Low
-	DIO_Write_Pin(LCD_4Bits_PORT_,LCD_EN,0);
-	
-	_delay_us(DELAY_PERIOD_AFTER_ENABLE_LOW);	
-
-}
-*/
 
 //--------------------------------------------------------------------------------------------------------------------------//
 
@@ -462,27 +329,7 @@ void LCD_8Bits_Write_Data ( unsigned char Data )
 	LCD_8Bits_COMMAND_PORT &= ~ (1<<LCD_EN) ;		//EN = 0 for High-to-Low pulse
 	_delay_us (100);						//wait to make enable wide
 	
-	/*
-		X_axis++ ;
-
-		if (X_axis >= 16 && Y_axis <3 )
-		{
-			X_axis = 1;
-			Y_axis++;
-			if (Y_axis == 3 )
-			{
-				X_axis = 1 , Y_axis = 1;
-				LCD_8Bits_Clear();
-
-			}
-
-			else
-			{
-				LCD_8Bits_Cursor_Position(2,1);
-			}
-
-		}
-	*/
+	
 }
 //--------------------------------------------------------------------------------------------------------------------------//
 
@@ -687,11 +534,7 @@ void LCD_Send_Byte(const uint8 Data , const uint8 Data_Flag)
 	GPIO_WritePortPin(LCD_4Bits_PORT, LCD_RW, 0); 
 	GPIO_WritePortPin(LCD_4Bits_PORT, LCD_EN, 0); 
 	
-	/*
-	DIO_Write_Pin(LCD_4Bits_PORT_ , LCD_RS , Data_Flag);
-	DIO_Write_Pin(LCD_4Bits_PORT_ , LCD_RW , 0);
-	DIO_Write_Pin(LCD_4Bits_PORT_ , LCD_EN , 0);
-	*/
+	
 	LCD_Delay();
 	
 	
@@ -702,17 +545,12 @@ void LCD_Send_Byte(const uint8 Data , const uint8 Data_Flag)
 	GPIO_WritePortPin(LCD_4Bits_PORT, PIN6,( (Data & 0x40) == 0x40 ) );	
 	GPIO_WritePortPin(LCD_4Bits_PORT, PIN7,( (Data & 0x80) == 0x80 ) );
 	
-	/*
-	DIO_Write_Pin(LCD_4Bits_PORT_ , PIN4 ,( (Data & 0x10) == 0x10 ) );
-	DIO_Write_Pin(LCD_4Bits_PORT_ , PIN5 ,( (Data & 0x20) == 0x20 ) );
-	DIO_Write_Pin(LCD_4Bits_PORT_ , PIN6 ,( (Data & 0x40) == 0x40 ) );
-	DIO_Write_Pin(LCD_4Bits_PORT_ , PIN7 ,( (Data & 0x80) == 0x80 ) );
-	*/
+	
 	
 	LCD_Delay();
 	
 	GPIO_WritePortPin(LCD_4Bits_PORT, LCD_EN,1 );
-	//DIO_Write_Pin(LCD_4Bits_PORT_ , LCD_EN , 1);		//Latch the High nybble
+	//Latch the High nybble
 	
 	LCD_Delay();
 	
@@ -726,22 +564,13 @@ void LCD_Send_Byte(const uint8 Data , const uint8 Data_Flag)
 	GPIO_WritePortPin(LCD_4Bits_PORT, PIN6, 0);
 	GPIO_WritePortPin(LCD_4Bits_PORT, PIN7, 0);
 	
-	/*
-	DIO_Write_Pin(LCD_4Bits_PORT_ , PIN4 , 0);
-	DIO_Write_Pin(LCD_4Bits_PORT_ , PIN5 , 0);
-	DIO_Write_Pin(LCD_4Bits_PORT_ , PIN6 , 0);
-	DIO_Write_Pin(LCD_4Bits_PORT_ , PIN7 , 0);
-	*/
+	
 	
 	GPIO_WritePortPin(LCD_4Bits_PORT, LCD_RS, Data_Flag);
 	GPIO_WritePortPin(LCD_4Bits_PORT, LCD_RW, 0);
 	GPIO_WritePortPin(LCD_4Bits_PORT, LCD_EN, 0);
 	
-	/*
-	DIO_Write_Pin(LCD_4Bits_PORT_ , LCD_RS , Data_Flag);
-	DIO_Write_Pin(LCD_4Bits_PORT_ , LCD_RW , 0);
-	DIO_Write_Pin(LCD_4Bits_PORT_ , LCD_EN , 0);
-	*/
+	
 	
 	LCD_Delay();
 	
@@ -752,21 +581,15 @@ void LCD_Send_Byte(const uint8 Data , const uint8 Data_Flag)
 	GPIO_WritePortPin(LCD_4Bits_PORT, PIN6,( (Data & 0x04) == 0x04 ) );
 	GPIO_WritePortPin(LCD_4Bits_PORT, PIN7,( (Data & 0x08) == 0x08 ) );
 	
-	/*
-	DIO_Write_Pin(LCD_4Bits_PORT_ , PIN4 ,( (Data & 0x01) == 0x01 ) );
-	DIO_Write_Pin(LCD_4Bits_PORT_ , PIN5 ,( (Data & 0x02) == 0x02 ) );
-	DIO_Write_Pin(LCD_4Bits_PORT_ , PIN6 ,( (Data & 0x04) == 0x04 ) );
-	DIO_Write_Pin(LCD_4Bits_PORT_ , PIN7 ,( (Data & 0x08) == 0x08 ) );
-	*/
+	
 	LCD_Delay();
 	
 	GPIO_WritePortPin(LCD_4Bits_PORT, LCD_EN, 1);
-	//DIO_Write_Pin(LCD_4Bits_PORT_ , LCD_EN , 1);		//Latch the Low nybble
+	//Latch the Low nybble
 	
 	LCD_Delay();
 	
 	GPIO_WritePortPin(LCD_4Bits_PORT, LCD_EN, 0);
-	//DIO_Write_Pin(LCD_4Bits_PORT_ , LCD_EN , 0);
 	
 	LCD_Delay();
 	
@@ -851,28 +674,6 @@ void LCD_Delay (void)
 
 
 
-
-/*
-void LCD_KEYPAD_Init (void)
-{
-	uint8 i;
-	uint8 P_prompt[] = "Type your key";
-	
-	//Clear the Keypad Buffer
-	Keypad_Clear_Buffer();
-	
-	//Prepare the display
-	
-	for(i=0 ; i<LCD_CHARACTERS; i++)
-	{
-		LCD_Data_G[0][i]= P_prompt[i];
-		LCD_Data_G[1][i] = '*';
-	}
-	
-	 Char_G = 0;
-	
-}
-*/
 
 
 void LCD_Keypad_Update (void)
