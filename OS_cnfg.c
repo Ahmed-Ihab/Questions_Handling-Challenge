@@ -7,5 +7,5 @@
 
 #include "OS_cnfg.h"
 
-OS_ConfigType OS_cnfg = { TIMER_1, 2 };
+OS_ConfigType OS_cnfg = { TIMER_1, 1};
 

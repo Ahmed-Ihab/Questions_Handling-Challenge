@@ -36,12 +36,19 @@ typedef signed long long      sint64;
 typedef float                 float32;
 typedef double                float64;
 
+#define GPIO_WritePortPin(PORT, PIN, DATA)          ((PORT) = (PORT & (~(1 << PIN)))|(DATA << PIN))
+
+#define GPIO_ReadPortPin(PORT, PIN)    (((PORT) & (1 << PIN)) >> (PIN))
 
 typedef enum {
 	NOK, OK
 } Std_Func_t;
 
 typedef enum {AK,NAK} ACK;
+
+typedef enum {FIRST_VISIT=0,SECOND_VISIT=1, WAITING=2 , PENDING=2 ,DONE=3}NO_of_Visit_t;
+
+typedef enum {NOT_FINISHED,FINISHED}Function_Process_t;
 
 
 #endif /* STD_TYPE_H_ */

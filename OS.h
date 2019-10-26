@@ -15,7 +15,7 @@
 
 
 
-#define BUFFER_SIZE ((uint8)3)
+#define BUFFER_SIZE ((uint8)6)
 
 typedef enum {Ready,Running,Waiting,Deleted,Idle}Status_t;
 

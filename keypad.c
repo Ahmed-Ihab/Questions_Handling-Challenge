@@ -43,7 +43,7 @@ void keypad_Update (void)
 		if (Keypad_Scan( &Key ) == 0)
 		{
 			//No New Key Data just return
-			return ;
+	    	return ;
 		}
 
 
@@ -89,8 +89,7 @@ uint8 Keypad_Scan ( uint8* const P_Key )
 		
 	if ( Keypad_input_col_1 == 0 )  
 	{
-		Key='y';
-		
+		Key='1';
 	}
 	if ( Keypad_input_col_2 == 0 )  Key='2';
 	if ( Keypad_input_col_3 == 0 )  Key='3';

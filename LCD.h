@@ -20,6 +20,7 @@
 #include "DIO.h"
 #include "OS.h"
 #include "Keypad.h"
+#include "Timer.h"
 
 
 
@@ -68,6 +69,8 @@ void LCD_Update (void);
 void LCD_Create_Character(const uint8 UDC_ID , const uint8 *const P_UDC);
 void LCD_Send_Byte(const uint8 Data , const uint8 Data_Flag);
 void LCD_Control_Cursor (const uint8 VISIBLE , const uint8 BLINKING, const uint8 ADDRESS);
+void LCD_Delay (void);
+void LCD_SetDDRAM (uint8 ADDRESS);
  
 void LCD_KEYPAD_Init (void);
 void LCD_Keypad_Update (void);
@@ -81,7 +84,8 @@ void LCD_Keypad_Update (void);
 
 	
 //LCD_4Bits_FUNCTIONS PROTOTYPE
-void LCD_4Bits_Initialization (void);
+//void LCD_4Bits_Initialization (void);
+Function_Process_t LCD_4Bits_Initialization (void);
 void LCD_4Bits_Write_Command ( unsigned char Command );
 void LCD_4Bits_Write_Data ( unsigned char Data );
 void LCD_4Bits_Cursor_Position( unsigned char x , unsigned char y);   		// define Cursor Position in the LCD

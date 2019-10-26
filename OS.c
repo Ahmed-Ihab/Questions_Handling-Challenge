@@ -14,7 +14,7 @@ volatile uint8 ISR_Generated_Flag = 0;
 //static uint8 System_Tick_Count = 0 ;
 //static uint16 Max_Run_Time = 0;
 static uint8 Timer_Select ;	
-
+static uint8 first_time_visit = 0;
 
 ST_Task_Info Task_Buffer[BUFFER_SIZE];
 
@@ -99,15 +99,18 @@ void OS_Run(void)
 {
   if (OS_init_flag == 1)
   {
-
-	TIMER_Start(Timer_Select);
-
-	uint8 Highest_Priority_Index = (uint8) 10;
-	uint8 Highest_Priority  = (uint8) 10;
-	uint8 i=0;
-	uint8 Current_Ready_Task_Counter=0;
-	uint8 Total_Ready_Task = 0;
-
+	  	if(first_time_visit == 0)
+	  	{
+		  	TIMER_Start(Timer_Select);
+		  	first_time_visit = 1;
+	  	}
+		  
+	  uint8 Highest_Priority_Index = (uint8) 10;
+	  uint8 Highest_Priority  = (uint8) 10;
+	  uint8 i=0;
+	  uint8 Current_Ready_Task_Counter=0;
+	  uint8 Total_Ready_Task = 0;
+	  
 		/*******************************************************************************************/
 
 	while(1)
