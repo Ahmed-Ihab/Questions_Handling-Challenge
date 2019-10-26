@@ -653,7 +653,7 @@ void Question_Handling_Task (void)
 							
 						}
 
-						else if(Answer != Answer_of_Questions[QUESTION1] && Answer != SKIP)
+						else if(Answer != Answer_of_Questions[QUESTION5] && Answer != SKIP)
 						{
 							//clear screen
 							LCD_Send_Byte( 0x01 ,0);
