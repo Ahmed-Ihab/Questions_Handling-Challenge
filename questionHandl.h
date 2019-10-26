@@ -20,8 +20,9 @@
 #define NO   '2'
 #define SKIP '3'
 
-
+/*qustion states*/
 typedef enum   { QUESTION1=0, QUESTION2 ,QUESTION3,QUESTION4,QUESTION5,RESULT} Question_State_t;
+/*app stages from getting question to answerig it and displaying result*/
 typedef enum   { PRINT_QUESTION=0, PRINT_CHOICES ,GET_ANSWER,SHOW_CORRECT_OR_NOT} APP_STATE_t;
 	
 void Question_Handling_Task (void);

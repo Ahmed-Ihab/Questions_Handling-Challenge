@@ -6,26 +6,37 @@
  */ 
 #include"questionHandl.h"
 
-
+/***** QUESTIONS ******/
 static uint8 Question[5][16]={"ascii of . = 46?","ascii of + = 43?","ascii of E = 70?", "ascii of N = 78?","ascii of B = 67?"};
+/***** Right  answers  ******/
 static uint8 Answer_of_Questions[5]={YES,YES,NO,YES,NO};
 
 
 	
 void Question_Handling_Task (void)
 {
+	/*question stages*/
 	static Question_State_t Question_State = QUESTION1;
+	/*application stages*/
 	static APP_STATE_t app_state = PRINT_QUESTION;
+	/*iterator throught the whole application*/
 	static uint8 quest_iterator = 0;
+	/*indicating number of correct answers*/
 	static uint8 Correct_Answer=0;
+	/*indicating correct answer*/
 	static uint8 correct_answer_flag = 0;
+	/*indicating wrong answer*/
 	static uint8 wrong_answer_flag = 0;
 	uint8 Answer= 6;	//any values except 1 , 2 , 3
-	uint8 Display_choices[]="1.YES 2.NO 3.SKP";
+	/*choices*/
+	uint8 Display_choices[]="1.YES 2.NO 3.NXT";
+	/*final score*/
 	uint8 score[]="yr score:";
+	/*displaying right or wrong */
 	uint8 right[]="CORRECT ";
 	uint8 wrong[]="WRONG ";
-	uint8 static fini = 0;
+	/*indicating end of process*/
+	uint8 static end_of_app = 0;
 
 	switch(Question_State)
 
@@ -34,7 +45,7 @@ void Question_Handling_Task (void)
 		{
 			switch(app_state)
 			{
-				
+				/*printing question till ?*/
 				case PRINT_QUESTION:
 				{
 					if(Question[QUESTION1][quest_iterator] != '?')
@@ -54,6 +65,7 @@ void Question_Handling_Task (void)
 				
 				case PRINT_CHOICES:
 				{
+					/*printing available  choices*/
 					if(Display_choices[quest_iterator] != '\0')			// wait your answer choices to be completely displayed in the second line then select your answer through keypad
 					{
 						LCD_Data_G[1][quest_iterator] = Display_choices[quest_iterator];
@@ -69,7 +81,7 @@ void Question_Handling_Task (void)
 					break;
 				}
 
-
+				/*get answer from user by keypad*/
 				case GET_ANSWER:
 				{
 					if(	Keypad_Get_Data_from_Buffer(&Answer) )
@@ -110,11 +122,12 @@ void Question_Handling_Task (void)
 					}
 					break;
 				}
+				/*informing user after every question with his progress*/
 				case SHOW_CORRECT_OR_NOT:
 				{
 					if(correct_answer_flag == 1 )
 					{
-						//Correct_Answer++;
+						
 						
 						if(score[quest_iterator] != '\0')			// wait your answer choices to be completely displayed in the second line then select your answer through keypad
 						{
@@ -143,7 +156,6 @@ void Question_Handling_Task (void)
 						{
 							quest_iterator = 0;
 							wrong_answer_flag = 0;
-							//LCD_Send_Byte( 0x01 ,0);
 							app_state = PRINT_QUESTION;
 							Question_State = QUESTION2;
 						}
@@ -153,11 +165,12 @@ void Question_Handling_Task (void)
 			}
 			break;
 		}
+		
 		case QUESTION2:
 		{
 			switch(app_state)
 			{
-				
+				/*printing question till ?*/
 				case PRINT_QUESTION:
 				{
 					if(Question[QUESTION2][quest_iterator] != '?')
@@ -175,7 +188,7 @@ void Question_Handling_Task (void)
 					break;
 				}
 				
-				
+				/*printing available  choices*/
 				case PRINT_CHOICES:
 				{
 					if(Display_choices[quest_iterator] != '\0')			// wait your answer choices to be completely displayed in the second line then select your answer through keypad
@@ -193,7 +206,7 @@ void Question_Handling_Task (void)
 					break;
 				}
 
-
+				/*get answer from user by keypad*/
 				case GET_ANSWER:
 				{
 					if(	Keypad_Get_Data_from_Buffer(&Answer) )
@@ -234,6 +247,7 @@ void Question_Handling_Task (void)
 					}
 					break;
 				}
+				/*informing user after every question with his progress*/
 				case SHOW_CORRECT_OR_NOT:
 				{
 					if(correct_answer_flag == 1 )
@@ -277,11 +291,12 @@ void Question_Handling_Task (void)
 			}
 			break;
 		}
+		
 		case QUESTION3:
 		{
 			switch(app_state)
 			{
-				
+				/*printing question till ?*/
 				case PRINT_QUESTION:
 				{
 					if(Question[QUESTION3][quest_iterator] != '?')
@@ -298,7 +313,7 @@ void Question_Handling_Task (void)
 					break;
 				}
 				
-				
+				/*printing available  choices*/
 				case PRINT_CHOICES:
 				{
 					if(Display_choices[quest_iterator] != '\0')			// wait your answer choices to be completely displayed in the second line then select your answer through keypad
@@ -316,7 +331,7 @@ void Question_Handling_Task (void)
 					break;
 				}
 
-
+				/*get answer from user by keypad*/
 				case GET_ANSWER:
 				{
 					if(	Keypad_Get_Data_from_Buffer(&Answer) )
@@ -357,6 +372,7 @@ void Question_Handling_Task (void)
 					}
 					break;
 				}
+				/*informing user after every question with his progress*/
 				case SHOW_CORRECT_OR_NOT:
 				{
 					if(correct_answer_flag == 1 )
@@ -404,7 +420,7 @@ void Question_Handling_Task (void)
 		{
 			switch(app_state)
 			{
-				
+				/*printing question till ?*/
 				case PRINT_QUESTION:
 				{
 					if(Question[QUESTION4][quest_iterator] != '?')
@@ -422,7 +438,7 @@ void Question_Handling_Task (void)
 					break;
 				}
 				
-				
+				/*printing available  choices*/
 				case PRINT_CHOICES:
 				{
 					if(Display_choices[quest_iterator] != '\0')			// wait your answer choices to be completely displayed in the second line then select your answer through keypad
@@ -441,7 +457,7 @@ void Question_Handling_Task (void)
 					break;
 				}
 
-
+				/*get answer from user by keypad*/
 				case GET_ANSWER:
 				{
 					if(	Keypad_Get_Data_from_Buffer(&Answer) )
@@ -482,6 +498,7 @@ void Question_Handling_Task (void)
 					}
 					break;
 				}
+				/*informing user after every question with his progress*/
 				case SHOW_CORRECT_OR_NOT:
 				{
 					if(correct_answer_flag == 1 )
@@ -529,7 +546,7 @@ void Question_Handling_Task (void)
 		{
 			switch(app_state)
 			{
-				
+				/*printing question till ?*/
 				case PRINT_QUESTION:
 				{
 					if(Question[QUESTION5][quest_iterator] != '?')
@@ -548,7 +565,7 @@ void Question_Handling_Task (void)
 					break;
 				}
 				
-				
+				/*printing available  choices*/
 				case PRINT_CHOICES:
 				{
 					if(Display_choices[quest_iterator] != '\0')			// wait your answer choices to be completely displayed in the second line then select your answer through keypad
@@ -568,7 +585,7 @@ void Question_Handling_Task (void)
 					break;
 				}
 
-
+				/*get answer from user by keypad*/
 				case GET_ANSWER:
 				{
 					if(	Keypad_Get_Data_from_Buffer(&Answer) )
@@ -609,14 +626,15 @@ void Question_Handling_Task (void)
 					}
 					break;
 				}
+				/*informing user after every question with his progress*/
 				case SHOW_CORRECT_OR_NOT:
 				{
-					if(fini == 0)
+					if(end_of_app == 0)
 					{
 						LCD_Send_Byte( 0x01 ,0);
-						fini = 1;
+						end_of_app = 1;
 					}
-					else if(fini == 1)
+					else if(end_of_app == 1)
 					{
 						if(correct_answer_flag == 1 )
 						{
@@ -658,6 +676,7 @@ void Question_Handling_Task (void)
 			}
 			break;
 		}
+		/*Displaying th scores*/
 		case RESULT:
 		{
 			if(score[quest_iterator] != '\0')			// wait your answer choices to be completely displayed in the second line then select your answer through keypad
